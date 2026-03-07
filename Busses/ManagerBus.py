@@ -27,6 +27,17 @@ class TaskManager:
         self.tasks.append(new_task)
         return new_task
 
+    def complete_task(self, task_id):
+        """
+        Implementation of Ticket: User can select a task by ID and mark it complete.
+        Searches for the task ID and updates the 'completed' field to True.
+        """
+        for task in self.tasks:
+            if task['id'] == task_id:
+                task['completed'] = True #
+                return task
+        return None # Return None if ID is not found
+
     def get_tasks(self):
         """Returns the current list of tasks."""
         return self.tasks
