@@ -1,9 +1,6 @@
-save = {
-    0: {
-        "Title": "...",
-        "Description": "...",
-        "Priority": 0,
-        "Status": 0
-    }
-
-}
+save = [{
+    'id': 1,
+    'description': 'Complete project proposal',
+    'priority': 'High',
+    'completed': False
+}]
