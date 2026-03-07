@@ -5,9 +5,11 @@ def main():
 
     print("--- Todo List Manager ---")
     
-    print("Adding a new task...")
-    manager.add_task("Review pull requests", priority="High")
-    manager.add_task("Update documentation", priority="Low")
+    description = input("Enter task description: ")
+
+    new_task = manager.add_task(description)
+    
+    print(f"\nSuccessfully added task: '{new_task['description']}'")
 
     print("\nCurrent Task List:")
     for task in manager.get_tasks():
