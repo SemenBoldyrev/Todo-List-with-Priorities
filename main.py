@@ -9,7 +9,8 @@ def main():
 
     new_task = manager.add_task(description)
     
-    print(f"\nSuccessfully added task: '{new_task['description']}'")
+    print(f"\nSuccessfully added task: '{new_task['description']}' \
+          \nTask added with Auto-ID: {new_task['id']}")
 
     print("\nCurrent Task List:")
     for task in manager.get_tasks():

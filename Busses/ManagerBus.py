@@ -11,7 +11,11 @@ class TaskManager:
         Implementation of the ticket: Task is added to the task list.
         Generates a new ID and appends the task to the list.
         """
-        new_id = max([task['id'] for task in self.tasks], default=0) + 1
+
+        if not self.tasks:
+            new_id = 1
+        else:
+            new_id = max(task['id'] for task in self.tasks) + 1
         
         new_task = {
             'id': new_id,
