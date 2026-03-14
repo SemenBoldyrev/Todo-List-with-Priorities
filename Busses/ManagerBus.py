@@ -1,46 +1,42 @@
-from Saves.SaveDict import save
-from Saves.PriorityTypes import GetPriorityList
+from Saves.SaveDict import LoadData, SaveData
+
 
 class TaskManager:
     """Handles the business logic for managing tasks."""
-    
+
     def __init__(self):
-        self.tasks = save
+        self.tasks = LoadData()
 
     def add_task(self, description, priority='Medium'):
         """
-        Implementation of the ticket: Task is added to the task list.
-        Generates a new ID and appends the task to the list.
+        Adds a new task to the task list.
         """
-        valid_priorities = GetPriorityList()
-        if priority not in valid_priorities:
-            priority = 'Medium'
-        
         if not self.tasks:
             new_id = 1
         else:
             new_id = max(task['id'] for task in self.tasks) + 1
-        
+
         new_task = {
             'id': new_id,
             'description': description,
             'priority': priority,
             'completed': False
         }
-        
+
         self.tasks.append(new_task)
+        SaveData(self.tasks)
         return new_task
 
     def complete_task(self, task_id):
         """
-        Implementation of Ticket: User can select a task by ID and mark it complete.
-        Searches for the task ID and updates the 'completed' field to True.
+        Marks a task as completed by ID.
         """
         for task in self.tasks:
             if task['id'] == task_id:
-                task['completed'] = True #
+                task['completed'] = True
+                SaveData(self.tasks)
                 return task
-        return None # Return None if ID is not found
+        return None
 
     def get_tasks(self):
         """Returns the current list of tasks."""
