@@ -20,7 +20,8 @@ def main():
         print("1. Show all tasks")
         print("2. Add new task")
         print("3. Mark task as complete")
-        print("4. Exit")
+        print("4. Remove task")
+        print("5. Exit")
         
         choice = input("\nSelect an option: ")
 
@@ -52,6 +53,18 @@ def main():
                 print(f"Error: {e}")
 
         elif choice == '4':
+            try:
+                target_id = int(input("\nEnter task ID to remove: "))
+                confirm = input(f"Are you sure you want to delete task {target_id}? (y/n): ")
+                if confirm.lower() == 'y':
+                    manager.RemoveTask(target_id)
+                    print(f"SUCCESS: Task {target_id} has been removed.")
+                else:
+                    print("Deletion cancelled.")
+            except (ValueError, TypeError) as e:
+                print(f"ERROR: {e}")
+
+        elif choice == '5':
             print("Goodbye!")
             break
         else:
