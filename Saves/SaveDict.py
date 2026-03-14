@@ -22,3 +22,19 @@ def SaveData(data: list):
 def LoadData() -> list:
     """Loads task data from temporary storage."""
     return data_holder
+
+if __name__ == "__main__":
+    test_data = [
+        {
+            "id": 2,
+            "description": "Test task",
+            "priority": "Medium",
+            "completed": False
+        }
+    ]
+
+    save_result = SaveData(test_data)
+    loaded_data = LoadData()
+
+    print("Save result:", save_result)
+    print("Loaded data:", loaded_data)
