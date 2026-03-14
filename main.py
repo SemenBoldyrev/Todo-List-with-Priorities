@@ -30,9 +30,10 @@ def main():
         print("2. Add new task")
         print("3. Mark task as complete")
         print("4. Remove task")
-        print("5. Advanced Filter (Completion + Priority)")
-        print("6. Exit")
-
+        print("5. Filter by priority")
+        print("6. Advanced Filter (Completion + Priority)")
+        print("7. Exit")
+        
         choice = input("\nSelect an option: ")
 
         if choice == "1":
@@ -79,10 +80,28 @@ def main():
                 else:
                     print("Deletion cancelled.")
 
-            except (ValueError, TypeError) as error:
-                print(f"ERROR: {error}")
+        elif choice == '5':
+            print("\n--- Filter by Priority ---")
+            for idx, p in enumerate(priorities):
+                print(f"{idx + 1}. Show only {p}")
+            print(f"{len(priorities) + 1}. Back to all tasks")
+            
+            p_choice = input(f"Select (1-{len(priorities) + 1}): ")
+            
+            try:
+                p_idx = int(p_choice) - 1
+                if 0 <= p_idx < len(priorities):
+                    selected_priority = priorities[p_idx]
+                    filtered = FilterByPriority(manager.get_tasks(), selected_priority) #
+                    print(f"\n--- Results for {selected_priority} ---")
+                    display_tasks(filtered, empty_message="No tasks with this priority")
+                else:
+                    display_tasks(manager.get_tasks())
+            except ValueError:
+                print("Invalid input. Showing all tasks.")
+                display_tasks(manager.get_tasks())
 
-        elif choice == "5":
+        elif choice == '6':
             current_filtered_list = manager.get_tasks()
 
             print("\nStep 1: Filter by completion status")
@@ -117,7 +136,7 @@ def main():
             msg = "No tasks with this priority" if applied_priority_filter else "No tasks found"
             display_tasks(current_filtered_list, empty_message=msg)
 
-        elif choice == "6":
+        elif choice == '7':
             print("Goodbye!")
             break
 
