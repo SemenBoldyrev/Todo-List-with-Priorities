@@ -1,62 +1,61 @@
-from Saves.SaveDict import save
-from Controllers.TaskController import CreateTaskDict, UpdateTaskFields, MarkAsCompleted, ValidateTaskData
+from Busses.ManagerBus import TaskManager
+from Saves.PriorityTypes import GetPriorityList
 
-class TaskManager:
-    """Handles the business logic for managing tasks."""
-    
-    def __init__(self):
-        self.tasks = save
+def display_tasks(tasks):
+    """Helps display tasks in a formatted table."""
+    print("\n" + "="*100)
+    print(f"{'ID':<4} | {'Status':<8} | {'Priority':<8} | {'Description'}")
+    print("-" * 100)
+    for t in tasks:
+        status = "[✓]" if t['completed'] else "[ ]"
+        print(f"{t['id']:<4} | {status:<8} | {t['priority']:<8} | {t['description']}")
+    print("="*100 + "\n")
 
-    def GetTask(self, task_id: int):
-        """Returns a task by its ID."""
-        if not isinstance(task_id, int):
-            raise TypeError(f"ID must be int, got {type(task_id).__name__}")
+def main():
+    manager = TaskManager()
+    priorities = GetPriorityList()
+
+    while True:
+        print("--- Todo List Manager ---")
+        print("1. Show all tasks")
+        print("2. Add new task")
+        print("3. Mark task as complete")
+        print("4. Exit")
         
-        task = next((t for t in self.tasks if t['id'] == task_id), None)
+        choice = input("\nSelect an option: ")
 
-        if task is None:
-            raise ValueError(f"Task with ID {task_id} not found (out of range).")
-        return task
-    
-    def AddTask(self, task: dict):
-        """
-        Adds a completed task (dict) to the list.
-        If ID is not specified, generates it automatically.
-        """
-        ValidateTaskData(task)
-        if 'id' not in task:
-            if not self.tasks:
-                task['id'] = 1
+        if choice == '1':
+            tasks = manager.get_tasks()
+            if not tasks:
+                print("\nYour todo list is empty.")
             else:
-                task['id'] = max(t['id'] for t in self.tasks) + 1
-        
-        task.setdefault('priority', 'Medium')
-        task.setdefault('completed', False)
-        new_task = CreateTaskDict(task['description'], task['priority'], task['id'])
-        
-        self.tasks.append(new_task)
-        return task
+                display_tasks(tasks)
 
-    def ChangeTask(self, task_id: int, nTask: dict):
-        """
-        Updates an existing task by ID with data from nTask.
-        """
-        ValidateTaskData(nTask)
-        task = self.GetTask(task_id)
-        if task:
-            return UpdateTaskFields(task, nTask)
-        return None
+        elif choice == '2':
+            description = input("Enter task description: ")
+            print(f"Available priorities: {', '.join(priorities)}")
+            priority = input("Choose priority (default 'Medium'): ")
+            if priority not in priorities:
+                priority = "Medium"
+            
+            manager.AddTask({'description': description, 'priority': priority})
+            print("\nSUCCESS: Task added!")
 
-    def complete_task(self, task_id):
-        """
-        Implementation of Ticket: User can select a task by ID and mark it complete.
-        Searches for the task ID and updates the 'completed' field to True.
-        """
-        task = self.GetTask(task_id)
-        if task:
-            return MarkAsCompleted(task)
-        return None
+        elif choice == '3':
+            try:
+                target_id = int(input("\nEnter task ID to complete: "))
+                if manager.ChangeTask(target_id, {'completed': True}):
+                    print(f"Task {target_id} updated!")
+                else:
+                    print("Error: Task not found.")
+            except (ValueError, TypeError) as e:
+                print(f"Error: {e}")
 
-    def get_tasks(self):
-        """Returns the current list of tasks."""
-        return self.tasks
+        elif choice == '4':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
+
+if __name__ == "__main__":
+    main()
