@@ -47,7 +47,18 @@ class TaskManager:
             return UpdateTaskFields(task, nTask)
         return None
 
-    def complete_task(self, task_id):
+    def RemoveTask(self, task_id: int):
+        """
+        Deletes a task by its ID. Raises an error if the task is not found.
+        """
+        if not isinstance(task_id, int):
+            raise TypeError("ID must be an integer")
+            
+        task = self.GetTask(task_id)
+        self.tasks.remove(task)
+        return True
+
+    def CompleteTask(self, task_id):
         """
         Implementation of Ticket: User can select a task by ID and mark it complete.
         Searches for the task ID and updates the 'completed' field to True.
