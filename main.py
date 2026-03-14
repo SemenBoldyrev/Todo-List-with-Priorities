@@ -1,57 +1,61 @@
 from Busses.ManagerBus import TaskManager
 from Saves.PriorityTypes import GetPriorityList
 
+def display_tasks(tasks):
+    """Helps display tasks in a formatted table."""
+    print("\n" + "="*100)
+    print(f"{'ID':<4} | {'Status':<8} | {'Priority':<8} | {'Description'}")
+    print("-" * 100)
+    for t in tasks:
+        status = "[✓]" if t['completed'] else "[ ]"
+        print(f"{t['id']:<4} | {status:<8} | {t['priority']:<8} | {t['description']}")
+    print("="*100 + "\n")
+
 def main():
     manager = TaskManager()
     priorities = GetPriorityList()
 
-    print("--- Todo List Manager ---")
-    
-    description = input("Enter task description: ")
-    print(f"Available priorities: {', '.join(priorities)}")
-    priority = input(f"Choose priority (default 'Medium'): ")
-
-    if priority not in priorities:
-        priority = "Medium"
-
-    task_data = {
-        'description': description,
-        'priority': priority
-    }
-    new_task = manager.AddTask(task_data)
-    
-    print("\n" + "="*30)
-    print(f"SUCCESS: Task created successfully!")
-    print(f"ID: {new_task['id']}")
-    print(f"Description: {new_task['description']}")
-    print(f"Priority: {new_task['priority']}")
-    print("="*30)
-
-
-    print("\n--- Current Task List ---")
-    for t in manager.get_tasks():
-        status = "✓" if t['completed'] else " " 
-        print(f"[{status}] ID: {t['id']} [{t['priority']}] - {t['description']}")
-    print("="*30)
-
-    try:
-        target_id = int(input("\nEnter the ID of the task to mark complete: "))
+    while True:
+        print("--- Todo List Manager ---")
+        print("1. Show all tasks")
+        print("2. Add new task")
+        print("3. Mark task as complete")
+        print("4. Exit")
         
-        task_to_update = manager.GetTask(target_id)
+        choice = input("\nSelect an option: ")
 
-        if task_to_update:
-            manager.ChangeTask(target_id, {'completed': True})
-            print(f"\nSUCCESS: Task {target_id} marked as complete!")
-        else:
-            print(f"\nERROR: Task with ID {target_id} not found.")
+        if choice == '1':
+            tasks = manager.get_tasks()
+            if not tasks:
+                print("\nYour todo list is empty.")
+            else:
+                display_tasks(tasks)
+
+        elif choice == '2':
+            description = input("Enter task description: ")
+            print(f"Available priorities: {', '.join(priorities)}")
+            priority = input("Choose priority (default 'Medium'): ")
+            if priority not in priorities:
+                priority = "Medium"
             
-    except ValueError:
-        print("\nERROR: Please enter a valid numeric ID.")
+            manager.AddTask({'description': description, 'priority': priority})
+            print("\nSUCCESS: Task added!")
 
-    print("\n--- Updated Task List ---")
-    for t in manager.get_tasks():
-        status = "✓" if t['completed'] else " " 
-        print(f"[{status}] ID: {t['id']} - {t['description']}")
+        elif choice == '3':
+            try:
+                target_id = int(input("\nEnter task ID to complete: "))
+                if manager.ChangeTask(target_id, {'completed': True}):
+                    print(f"Task {target_id} updated!")
+                else:
+                    print("Error: Task not found.")
+            except (ValueError, TypeError) as e:
+                print(f"Error: {e}")
+
+        elif choice == '4':
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice, please try again.")
 
 if __name__ == "__main__":
     main()
