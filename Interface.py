@@ -21,10 +21,23 @@ def ShowTaskList(data):
 
 
 def ShowChoice(variants: list) -> int:
-    print("Choose an option:")
+    try:
+        if not variants:
+            return -1
 
-    for index, variant in enumerate(variants, start=1):
-        print(f"{index}. {variant}")
+        for item in variants:
+            str(item)
 
-    choice = int(input("Enter choice number: "))
-    return choice
+        print("Choose an option:")
+        for index, variant in enumerate(variants):
+            print(f"{index}: {variant}")
+
+        user_input = input("Enter option: ")
+
+        if user_input not in variants:
+            return -1
+
+        return variants.index(user_input)
+
+    except Exception:
+        return -1
