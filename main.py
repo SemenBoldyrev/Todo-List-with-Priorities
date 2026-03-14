@@ -69,16 +69,17 @@ def main():
             except (ValueError, TypeError) as error:
                 print(f"ERROR: {error}")
 
-        elif choice == "4":
+        elif choice == '4':
             try:
                 target_id = int(input("\nEnter task ID to remove: "))
-                confirm = input(f"Are you sure you want to delete task {target_id}? (y/n): ").strip().lower()
-
-                if confirm == "y":
+                confirm = input(f"Are you sure you want to delete task {target_id}? (y/n): ")
+                if confirm.lower() == 'y':
                     manager.RemoveTask(target_id)
                     print(f"SUCCESS: Task {target_id} has been removed.")
                 else:
                     print("Deletion cancelled.")
+            except (ValueError, TypeError) as e:
+                print(f"ERROR: {e}")
 
         elif choice == '5':
             print("\n--- Filter by Priority ---")
