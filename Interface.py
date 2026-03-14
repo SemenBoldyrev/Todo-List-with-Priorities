@@ -25,19 +25,20 @@ def ShowChoice(variants: list) -> int:
         if not variants:
             return -1
 
+        printable_variants = []
         for item in variants:
-            str(item)
+            printable_variants.append(str(item))
 
         print("Choose an option:")
-        for index, variant in enumerate(variants):
+        for index, variant in enumerate(printable_variants):
             print(f"{index}: {variant}")
 
         user_input = input("Enter option: ")
 
-        if user_input not in variants:
-            return -1
+        if user_input in printable_variants:
+            return printable_variants.index(user_input)
 
-        return variants.index(user_input)
+        return -1
 
     except Exception:
         return -1
