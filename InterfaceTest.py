@@ -1,57 +1,64 @@
-from Interface import (
-    ShowMajorSeparation,
-    ShowMinorSeparation,
-    ShowText,
-    ShowTaskList,
-    ShowChoice
-)
+import unittest
+
+from Controllers.TaskController import RemoveTask
 
 
-def run_display_tests():
-    print("TEST 1: ShowMajorSeparation")
-    ShowMajorSeparation()
+class TestRemoveTask(unittest.TestCase):
 
-    print("\nTEST 2: ShowMinorSeparation")
-    ShowMinorSeparation()
+    def test_remove_task_success(self):
+        tasks = [
+            {
+                "id": 1,
+                "description": "Complete project proposal",
+                "priority": "High",
+                "completed": False
+            },
+            {
+                "id": 2,
+                "description": "Complete project report",
+                "priority": "Medium",
+                "completed": True
+            }
+        ]
 
-    print("\nTEST 3: ShowText")
-    ShowText("Hello from ShowText")
+        removed_task = RemoveTask(tasks, 1)
 
-    print("\nTEST 4: ShowTaskList with valid data")
-    test_tasks = [
-        {
-            "id": 1,
-            "description": "Complete homework",
-            "priority": "High",
-            "completed": False
-        },
-        {
-            "id": 2,
-            "description": "Read a book",
-            "priority": "Medium",
-            "completed": True
-        }
-    ]
-    ShowTaskList(test_tasks)
+        self.assertEqual(removed_task["id"], 1)
+        self.assertEqual(len(tasks), 1)
+        self.assertEqual(tasks[0]["id"], 2)
 
-    print("\nTEST 5: ShowTaskList with empty list")
-    ShowTaskList([])
+    def test_remove_task_out_of_range(self):
+        tasks = [
+            {
+                "id": 1,
+                "description": "Complete project proposal",
+                "priority": "High",
+                "completed": False
+            }
+        ]
 
+        with self.assertRaises(ValueError):
+            RemoveTask(tasks, 99)
 
-def run_choice_tests():
-    print("\nTEST 6: ShowChoice with strings")
-    result = ShowChoice(["resume", "exit"])
-    print("Result:", result)
+    def test_remove_task_invalid_id_type(self):
+        tasks = [
+            {
+                "id": 1,
+                "description": "Complete project proposal",
+                "priority": "High",
+                "completed": False
+            }
+        ]
 
-    print("\nTEST 7: ShowChoice with numbers")
-    result = ShowChoice([1, 2, 3])
-    print("Result:", result)
+        with self.assertRaises(TypeError):
+            RemoveTask(tasks, "1")
 
-    print("\nTEST 8: ShowChoice with mixed data")
-    result = ShowChoice(["resume", 123, True])
-    print("Result:", result)
+    def test_remove_task_from_empty_list(self):
+        tasks = []
+
+        with self.assertRaises(ValueError):
+            RemoveTask(tasks, 1)
 
 
 if __name__ == "__main__":
-    run_display_tests()
-    run_choice_tests()
+    unittest.main()
