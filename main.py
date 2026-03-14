@@ -1,6 +1,6 @@
 from Busses.ManagerBus import TaskManager
 from Saves.PriorityTypes import GetPriorityList
-from Filter.Filter import FilterByCompletion
+from Filter.Filter import FilterByCompletion, FilterByPriority
 
 def display_tasks(tasks):
     """Helps display tasks in a formatted table."""
@@ -22,7 +22,7 @@ def main():
         print("2. Add new task")
         print("3. Mark task as complete")
         print("4. Remove task")
-        print("5. Filter by completion")
+        print("5. Advanced Filter (Completion + Priority)")
         print("6. Exit")
         
         choice = input("\nSelect an option: ")
@@ -67,25 +67,36 @@ def main():
                 print(f"ERROR: {e}")
 
         elif choice == '5':
-            print("\nFilter by:")
-            print("1. Completed tasks")
-            print("2. In-progress tasks")
-            filter_choice = input("Select (1/2): ")
+            current_filtered_list = manager.get_tasks()
+
+            print("\nStep 1: Filter by completion status")
+            print("1. Completed only")
+            print("2. In-progress only")
+            print("3. Skip (Show both)")
+            comp_choice = input("Select (1/2/3): ")
             
-            all_tasks = manager.get_tasks()
+            if comp_choice == '1':
+                current_filtered_list = FilterByCompletion(current_filtered_list, True)
+            elif comp_choice == '2':
+                current_filtered_list = FilterByCompletion(current_filtered_list, False)
+
+            print("\nStep 2: Filter by priority")
+            for idx, p in enumerate(priorities):
+                print(f"{idx + 1}. {p}")
+            print(f"{len(priorities) + 1}. Skip (Show all priorities)")
+            
+            p_choice = input(f"Select (1-{len(priorities) + 1}): ")
+            
             try:
-                if filter_choice == '1':
-                    filtered = FilterByCompletion(all_tasks, True)
-                    print("\n--- Completed Tasks ---")
-                    display_tasks(filtered)
-                elif filter_choice == '2':
-                    filtered = FilterByCompletion(all_tasks, False)
-                    print("\n--- In-Progress Tasks ---")
-                    display_tasks(filtered)
-                else:
-                    print("Invalid filter selection.")
-            except ValueError as e:
-                print(f"Filter Error: {e}")
+                p_idx = int(p_choice) - 1
+                if 0 <= p_idx < len(priorities):
+                    selected_priority = priorities[p_idx]
+                    current_filtered_list = FilterByPriority(current_filtered_list, selected_priority)
+            except ValueError:
+                pass
+
+            print("\n--- Filtered Results ---")
+            display_tasks(current_filtered_list)
 
         elif choice == '6':
             print("Goodbye!")
