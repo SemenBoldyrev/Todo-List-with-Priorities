@@ -1,3 +1,13 @@
+def ValidateTaskData(task: dict):
+    """Checks that task is a dictionary and contains required string fields."""
+    if not isinstance(task, dict):
+        raise TypeError(f"Expected dict, got {type(task).__name__}")
+    
+    if 'description' in task and not isinstance(task['description'], str):
+        raise TypeError("Description must be a string")
+    if 'priority' in task and not isinstance(task['priority'], str):
+        raise TypeError("Priority must be a string")
+
 def CreateTaskDict(description: str, priority: str = "Medium", task_id: int = None) -> dict:
     """
     Creates a task dictionary with the given description, priority, and optional ID.
