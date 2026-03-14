@@ -2,8 +2,12 @@ from Busses.ManagerBus import TaskManager
 from Saves.PriorityTypes import GetPriorityList
 from Filter.Filter import FilterByCompletion, FilterByPriority
 
-def display_tasks(tasks):
-    """Helps display tasks in a formatted table."""
+def display_tasks(tasks, empty_message="No tasks found."):
+    """Helps display tasks in a formatted table with a custom empty message."""
+    if not tasks:
+        print(f"\n{empty_message}")
+        return
+        
     print("\n" + "="*100)
     print(f"{'ID':<4} | {'Status':<8} | {'Priority':<8} | {'Description'}")
     print("-" * 100)
@@ -86,17 +90,19 @@ def main():
             print(f"{len(priorities) + 1}. Skip (Show all priorities)")
             
             p_choice = input(f"Select (1-{len(priorities) + 1}): ")
-            
+            applied_priority_filter = False
             try:
                 p_idx = int(p_choice) - 1
                 if 0 <= p_idx < len(priorities):
                     selected_priority = priorities[p_idx]
                     current_filtered_list = FilterByPriority(current_filtered_list, selected_priority)
+                    applied_priority_filter = True
             except ValueError:
                 pass
 
             print("\n--- Filtered Results ---")
-            display_tasks(current_filtered_list)
+            msg = "No tasks with this priority" if applied_priority_filter else "No tasks found"
+            display_tasks(current_filtered_list, empty_message=msg)
 
         elif choice == '6':
             print("Goodbye!")
