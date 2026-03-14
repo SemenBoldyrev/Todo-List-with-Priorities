@@ -1,5 +1,6 @@
 from Busses.ManagerBus import TaskManager
 from Saves.PriorityTypes import GetPriorityList
+from Filter.Filter import FilterByCompletion
 
 def display_tasks(tasks):
     """Helps display tasks in a formatted table."""
@@ -21,7 +22,8 @@ def main():
         print("2. Add new task")
         print("3. Mark task as complete")
         print("4. Remove task")
-        print("5. Exit")
+        print("5. Filter by completion")
+        print("6. Exit")
         
         choice = input("\nSelect an option: ")
 
@@ -65,6 +67,27 @@ def main():
                 print(f"ERROR: {e}")
 
         elif choice == '5':
+            print("\nFilter by:")
+            print("1. Completed tasks")
+            print("2. In-progress tasks")
+            filter_choice = input("Select (1/2): ")
+            
+            all_tasks = manager.get_tasks()
+            try:
+                if filter_choice == '1':
+                    filtered = FilterByCompletion(all_tasks, True)
+                    print("\n--- Completed Tasks ---")
+                    display_tasks(filtered)
+                elif filter_choice == '2':
+                    filtered = FilterByCompletion(all_tasks, False)
+                    print("\n--- In-Progress Tasks ---")
+                    display_tasks(filtered)
+                else:
+                    print("Invalid filter selection.")
+            except ValueError as e:
+                print(f"Filter Error: {e}")
+
+        elif choice == '6':
             print("Goodbye!")
             break
         else:
