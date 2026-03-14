@@ -1,5 +1,5 @@
 from Saves.SaveDict import save
-from Saves.PriorityTypes import GetPriorityList
+from Controllers.TaskController import CreateTaskDict, UpdateTaskFields, MarkAsCompleted
 
 class TaskManager:
     """Handles the business logic for managing tasks."""
@@ -9,10 +9,7 @@ class TaskManager:
 
     def GetTask(self, task_id: int):
         """Returns a task by its ID."""
-        for task in self.tasks:
-            if task['id'] == task_id:
-                return task
-        return None
+        return next((t for t in self.tasks if t['id'] == task_id), None)
     
     def AddTask(self, task: dict):
         """
@@ -27,55 +24,29 @@ class TaskManager:
         
         task.setdefault('priority', 'Medium')
         task.setdefault('completed', False)
+        new_task = CreateTaskDict(task['description'], task['priority'], task['id'])
         
-        self.tasks.append(task)
+        self.tasks.append(new_task)
         return task
 
     def ChangeTask(self, task_id: int, nTask: dict):
         """
         Updates an existing task by ID with data from nTask.
         """
-        for i, task in enumerate(self.tasks):
-            if task['id'] == task_id:
-                nTask['id'] = task_id 
-                self.tasks[i].update(nTask)
-                return self.tasks[i]
+        task = self.GetTask(task_id)
+        if task:
+            return UpdateTaskFields(task, nTask)
         return None
-
-    def add_task(self, description, priority='Medium'):
-        """
-        Implementation of the ticket: Task is added to the task list.
-        Generates a new ID and appends the task to the list.
-        """
-        valid_priorities = GetPriorityList()
-        if priority not in valid_priorities:
-            priority = 'Medium'
-        
-        if not self.tasks:
-            new_id = 1
-        else:
-            new_id = max(task['id'] for task in self.tasks) + 1
-        
-        new_task = {
-            'id': new_id,
-            'description': description,
-            'priority': priority,
-            'completed': False
-        }
-        
-        self.tasks.append(new_task)
-        return new_task
 
     def complete_task(self, task_id):
         """
         Implementation of Ticket: User can select a task by ID and mark it complete.
         Searches for the task ID and updates the 'completed' field to True.
         """
-        for task in self.tasks:
-            if task['id'] == task_id:
-                task['completed'] = True #
-                return task
-        return None # Return None if ID is not found
+        task = self.GetTask(task_id)
+        if task:
+            return MarkAsCompleted(task)
+        return None
 
     def get_tasks(self):
         """Returns the current list of tasks."""
