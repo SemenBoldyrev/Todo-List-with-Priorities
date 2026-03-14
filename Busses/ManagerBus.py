@@ -1,4 +1,5 @@
 from Saves.SaveDict import save
+from Saves.PriorityTypes import GetPriorityList
 
 class TaskManager:
     """Handles the business logic for managing tasks."""
@@ -11,7 +12,10 @@ class TaskManager:
         Implementation of the ticket: Task is added to the task list.
         Generates a new ID and appends the task to the list.
         """
-
+        valid_priorities = GetPriorityList()
+        if priority not in valid_priorities:
+            priority = 'Medium'
+        
         if not self.tasks:
             new_id = 1
         else:
