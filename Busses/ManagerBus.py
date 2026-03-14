@@ -7,6 +7,41 @@ class TaskManager:
     def __init__(self):
         self.tasks = save
 
+    def GetTask(self, task_id: int):
+        """Returns a task by its ID."""
+        for task in self.tasks:
+            if task['id'] == task_id:
+                return task
+        return None
+    
+    def AddTask(self, task: dict):
+        """
+        Adds a completed task (dict) to the list.
+        If ID is not specified, generates it automatically.
+        """
+        if 'id' not in task:
+            if not self.tasks:
+                task['id'] = 1
+            else:
+                task['id'] = max(t['id'] for t in self.tasks) + 1
+        
+        task.setdefault('priority', 'Medium')
+        task.setdefault('completed', False)
+        
+        self.tasks.append(task)
+        return task
+
+    def ChangeTask(self, task_id: int, nTask: dict):
+        """
+        Updates an existing task by ID with data from nTask.
+        """
+        for i, task in enumerate(self.tasks):
+            if task['id'] == task_id:
+                nTask['id'] = task_id 
+                self.tasks[i].update(nTask)
+                return self.tasks[i]
+        return None
+
     def add_task(self, description, priority='Medium'):
         """
         Implementation of the ticket: Task is added to the task list.
