@@ -1,5 +1,5 @@
 from Saves.SaveDict import save
-from Controllers.TaskController import CreateTaskDict, UpdateTaskFields, MarkAsCompleted
+from Controllers.TaskController import CreateTaskDict, UpdateTaskFields, MarkAsCompleted, ValidateTaskData
 
 class TaskManager:
     """Handles the business logic for managing tasks."""
@@ -9,13 +9,21 @@ class TaskManager:
 
     def GetTask(self, task_id: int):
         """Returns a task by its ID."""
-        return next((t for t in self.tasks if t['id'] == task_id), None)
+        if not isinstance(task_id, int):
+            raise TypeError(f"ID must be int, got {type(task_id).__name__}")
+        
+        task = next((t for t in self.tasks if t['id'] == task_id), None)
+
+        if task is None:
+            raise ValueError(f"Task with ID {task_id} not found (out of range).")
+        return task
     
     def AddTask(self, task: dict):
         """
         Adds a completed task (dict) to the list.
         If ID is not specified, generates it automatically.
         """
+        ValidateTaskData(task)
         if 'id' not in task:
             if not self.tasks:
                 task['id'] = 1
@@ -33,6 +41,7 @@ class TaskManager:
         """
         Updates an existing task by ID with data from nTask.
         """
+        ValidateTaskData(nTask)
         task = self.GetTask(task_id)
         if task:
             return UpdateTaskFields(task, nTask)
