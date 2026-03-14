@@ -1,42 +1,43 @@
 from Busses.ManagerBus import TaskManager
+from Interface import ShowMajorSeparation, ShowMinorSeparation, ShowText, ShowTaskList
+
 
 def main():
     manager = TaskManager()
 
-    print("--- Todo List Manager ---")
+    ShowMajorSeparation()
+    ShowText("--- Todo List Manager ---")
+    ShowMajorSeparation()
     
     description = input("Enter task description: ")
     new_task = manager.add_task(description)
     
-    print("\n" + "="*30)
-    print(f"SUCCESS: Task created successfully!")
-    print(f"ID: {new_task['id']}")
-    print(f"Description: {new_task['description']}")
-    print("="*30)
-
+    print()
+    ShowMajorSeparation()
+    ShowText("SUCCESS: Task created successfully!")
+    ShowText(f"ID: {new_task['id']}")
+    ShowText(f"Description: {new_task['description']}")
+    ShowMajorSeparation()
 
     print("\n--- Current Task List ---")
-    for t in manager.tasks:
-        status = "✓" if t['completed'] else " " 
-        print(f"[{status}] ID: {t['id']} - {t['description']}")
-    print("="*30)
+    ShowTaskList(manager.tasks)
+    ShowMajorSeparation()
 
     try:
         target_id = int(input("\nEnter the ID of the task to mark complete: "))
-        updated_task = manager.complete_task(target_id) #
+        updated_task = manager.complete_task(target_id)
 
         if updated_task:
-            print(f"\nSUCCESS: Task {target_id} marked as complete!")
+            ShowText(f"\nSUCCESS: Task {target_id} marked as complete!")
         else:
-            print(f"\nERROR: Task with ID {target_id} not found.")
+            ShowText(f"\nERROR: Task with ID {target_id} not found.")
             
     except ValueError:
-        print("\nERROR: Please enter a valid numeric ID.")
+        ShowText("\nERROR: Please enter a valid numeric ID.")
 
     print("\n--- Updated Task List ---")
-    for t in manager.tasks:
-        status = "✓" if t['completed'] else " " 
-        print(f"[{status}] ID: {t['id']} - {t['description']}")
+    ShowTaskList(manager.tasks)
+
 
 if __name__ == "__main__":
     main()
